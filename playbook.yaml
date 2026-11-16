@@ -1,0 +1,42 @@
+# ansible-playbook -i localhost playbook.yaml -e "title='❤<fe0f> MAX NOTIFYING \!\!\!❤<fe0f>'" -e  "message='COMMUNITY MEETING HAPPENS IN 5 MINS IN AUDITORIUM'"  -vvv
+---
+- name: Friendly message for students with Max
+  hosts: localhost
+  become: false
+  vars:
+    text_size: '15'
+    color: '#4169E1' # blue
+    borders: '20'
+  tasks:
+    - name: get image
+      ansible.builtin.get_url:
+        url: https://ca.slack-edge.com/T039P7U66-U06MU4FGYH4-e9b647b21da5-192
+        dest: /tmp/max
+      when: image is not defined
+
+    - name: set image
+      ansible.builtin.set_fact:
+        image: /tmp/max
+      when: image is not defined
+
+    - name: Get image width and calculate proper width of window
+      ansible.builtin.command: python3 -c "from PIL import Image; a = Image.open('{{ image }}').size[0]; print(a + a // 1)" # adjust divisor to make window less
+      register: width
+
+    - name: Get image height and calculate proper height of window
+      ansible.builtin.command: python3 -c "from PIL import Image; a = Image.open('{{ image }}').size[1]; print(a + a // 1)"
+      register: height # adjust divisor to make window less
+
+    - name: Run friendly alert message with image
+      ansible.builtin.shell:
+        cmd: >
+          yad --picture --filename {{ image }}
+          --title '{{ title }}'
+          --button "OK"
+          --width {{ width.stdout }}
+          --height {{ height.stdout }}
+          --text="<span font='Noto Sans Bold {{ text_size }}' foreground='{{ color}}'> {{ message }} </span>"
+          --borders={{ borders }}
+          --text-align="center"
+          --buttons-layout="center"
+          --center
