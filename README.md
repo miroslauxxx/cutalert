@@ -7,4 +7,4 @@ ansible-playbook -i localhost playbook.yaml -e "title='❤<fe0f> MAX NOTIFYING \
 example usage without your image:
 ansible-playbook -i localhost playbook.yaml -e "image=/path/to/your/cute/cat" -e "title='❤<fe0f> MAX NOTIFYING \!\!\!❤<fe0f>'" -e  "message='COMMUNITY MEETING HAPPENS IN 5 MINS IN AUDITORIUM'"
 
-_with love by @milnicki_
+_with <3 by @milnicki_
